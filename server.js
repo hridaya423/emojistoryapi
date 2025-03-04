@@ -431,6 +431,189 @@ app.get("/docs", (req, res) => {
   res.json(apiDocs);
 });
 
+app.get("/", (req, res) => {
+  const apiDocs = {
+    name: "Emoji Story Generator API",
+    version: "1.0.0",
+    description: "Generate creative stories based on emoji combinations",
+    baseUrl: `http://localhost:${PORT}`,
+    endpoints: [
+      {
+        path: "/health",
+        method: "GET",
+        description: "Check API health status",
+        parameters: [],
+        responseExample: {
+          status: "ok",
+          uptime: 123.45,
+          version: "1.0.0"
+        }
+      },
+      {
+        path: "/generate",
+        method: "POST",
+        description: "Generate a story based on provided emojis",
+        parameters: [
+          { name: "emojis", type: "array", required: true, description: "Array of emoji characters" },
+          { name: "genre", type: "string", required: false, description: "Story genre (general, comedy, romance, horror, fantasy, sci-fi, mystery)", default: "general" },
+          { name: "length", type: "string", required: false, description: "Story length (short, medium, long)", default: "medium" }
+        ],
+        requestExample: {
+          emojis: ["🚀", "👽", "🌍"],
+          genre: "sci-fi",
+          length: "medium"
+        },
+        responseExample: {
+          id: "lkj7ac3d4",
+          story: "A story about space exploration...",
+          emojis: ["🚀", "👽", "🌍"],
+          genre: "sci-fi",
+          length: "medium",
+          timestamp: "2025-02-27T12:34:56.789Z"
+        }
+      },
+      {
+        path: "/random-emoji-story",
+        method: "POST",
+        description: "Generate a story with randomly selected emojis",
+        parameters: [
+          { name: "count", type: "number", required: false, description: "Number of random emojis (max 5)", default: 3 },
+          { name: "genre", type: "string", required: false, description: "Story genre", default: "general" },
+          { name: "length", type: "string", required: false, description: "Story length", default: "medium" }
+        ],
+        requestExample: {
+          count: 4,
+          genre: "fantasy",
+          length: "long"
+        },
+        responseExample: {
+          id: "mn5op7qr9",
+          story: "A magical tale...",
+          emojis: ["🧙", "🐉", "🏰", "💎"],
+          genre: "fantasy",
+          length: "long",
+          timestamp: "2025-02-27T12:34:56.789Z"
+        }
+      },
+      {
+        path: "/story/:id",
+        method: "GET",
+        description: "Retrieve a specific story by ID",
+        parameters: [
+          { name: "id", type: "string", required: true, description: "Unique story identifier", in: "path" }
+        ],
+        responseExample: {
+          id: "lkj7ab3d5",
+          emojis: ["🚀", "👽", "🌍"],
+          story: "A story about space exploration...",
+          genre: "sci-fi",
+          length: "medium",
+          timestamp: "2025-02-27T12:34:56.789Z",
+          likes: 7
+        }
+      },
+      {
+        path: "/story/:id/like",
+        method: "POST",
+        description: "Like a specific story",
+        parameters: [
+          { name: "id", type: "string", required: true, description: "Unique story identifier", in: "path" }
+        ],
+        responseExample: {
+          likes: 3
+        }
+      },
+      {
+        path: "/random",
+        method: "GET",
+        description: "Get a random story from history",
+        parameters: [],
+        responseExample: {
+          id: "xy2z3ab4c",
+          emojis: ["🎮", "👾", "🏆"],
+          story: "A gaming adventure...",
+          genre: "general",
+          length: "medium",
+          timestamp: "2025-02-27T12:34:56.789Z",
+          likes: 3
+        }
+      },
+      {
+        path: "/history",
+        method: "GET",
+        description: "Retrieve story history with pagination",
+        parameters: [
+          { name: "page", type: "number", required: false, description: "Page number", in: "query", default: 1 },
+          { name: "limit", type: "number", required: false, description: "Number of items per page", in: "query", default: 10 }
+        ],
+        responseExample: {
+          stories: [
+            {
+              id: "ab1cd2ef3",
+              emojis: ["🌈", "🦄", "🌟"],
+              story: "Once upon a time...",
+              genre: "fantasy",
+              length: "short",
+              timestamp: "2025-03-27T12:34:56.789Z",
+              likes: 7
+            }
+          ],
+          pagination: {
+            total: 56,
+            pages: 5,
+            currentPage: 1
+          }
+        }
+      },
+      {
+        path: "/search",
+        method: "GET",
+        description: "Search stories by content",
+        parameters: [
+          { name: "query", type: "string", required: true, description: "Search term", in: "query" }
+        ],
+        responseExample: {
+          results: [
+            {
+              id: "gh5ij6kl7",
+              emojis: ["🚗", "🏁", "💨"],
+              story: "The race was about to begin...",
+              genre: "general",
+              length: "medium",
+              timestamp: "2025-02-27T12:34:56.789Z",
+              likes: 2
+            }
+          ]
+        }
+      },
+      
+      {
+        path: "/stats",
+        method: "GET",
+        description: "Get usage statistics",
+        parameters: [],
+        responseExample: {
+          totalStoriesGenerated: 84,
+          storiesInHistory: 42,
+          topEmojis: [
+            { emoji: "🚀", count: 15 },
+            { emoji: "😍", count: 12 },
+            { emoji: "🌈", count: 10 }
+          ]
+        }
+      },
+      {
+        path: "/docs",
+        method: "GET",
+        description: "API documentation",
+        parameters: [],
+        responseExample: "Documentation for the API"
+      }
+    ]
+  };
+  res.json(apiDocs);
+});
+
 app.use((err, req, res, next) => {
   console.error("Server error:", err);
   res.status(500).json({ 
